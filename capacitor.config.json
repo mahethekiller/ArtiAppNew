@@ -1,0 +1,8 @@
+{
+  "appId": "com.onlinetxttools.arti",
+  "appName": "आरती संग्रह",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

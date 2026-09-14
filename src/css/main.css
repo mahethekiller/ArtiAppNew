@@ -1,0 +1,624 @@
+/* ==========================================================================
+   SACRED DEVOTIONAL DESIGN SYSTEM - MAIN STYLES
+   ========================================================================== */
+
+:root {
+  /* Spiritual Color Tokens */
+  --color-gold-primary: #D4AF37;
+  --color-gold-light: #F9E79F;
+  --color-gold-dark: #B7950B;
+  --color-saffron: #E65100;
+  --color-saffron-light: #FF9800;
+  --color-maroon: #880E4F;
+  --color-maroon-dark: #4A0033;
+  --color-diya-glow: #FFA000;
+
+  /* Theme: Warm Sacred Ivory (Default) */
+  --bg-app: #FDFBF7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFF9EE;
+  --bg-glass: rgba(253, 251, 247, 0.88);
+  --border-subtle: #EFE6D5;
+  --border-gold: rgba(212, 175, 55, 0.35);
+
+  --text-primary: #2D1F17;
+  --text-secondary: #795548;
+  --text-muted: #9E8E81;
+  --text-accent: #B71C1C;
+
+  --shadow-sm: 0 2px 8px rgba(45, 31, 23, 0.05);
+  --shadow-md: 0 6px 18px rgba(45, 31, 23, 0.08);
+  --shadow-lg: 0 12px 30px rgba(45, 31, 23, 0.12);
+  --shadow-gold: 0 0 20px rgba(212, 175, 55, 0.25);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --lyrics-font-size: 20px;
+  --font-family-devanagari: 'Tiro Devanagari Hindi', 'Noto Sans Devanagari', 'Rozha One', serif;
+  --font-family-body: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-display: 'Rozha One', 'Cinzel', serif;
+}
+
+/* Night / Dark Temple Theme */
+body.theme-night {
+  --bg-app: #12100E;
+  --bg-surface: #1E1A16;
+  --bg-surface-elevated: #28221C;
+  --bg-glass: rgba(18, 16, 14, 0.9);
+  --border-subtle: #332B24;
+  --border-gold: rgba(212, 175, 55, 0.45);
+
+  --text-primary: #F5EBE1;
+  --text-secondary: #C7B7A6;
+  --text-muted: #8C7B6B;
+  --text-accent: #FFB74D;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.6);
+  --shadow-gold: 0 0 25px rgba(212, 175, 55, 0.35);
+}
+
+/* Parchment / Sepia Theme */
+body.theme-parchment {
+  --bg-app: #F4EAD4;
+  --bg-surface: #EFE3C9;
+  --bg-surface-elevated: #E8D9BB;
+  --bg-glass: rgba(244, 234, 212, 0.92);
+  --border-subtle: #DECDB0;
+  --border-gold: rgba(184, 134, 11, 0.4);
+
+  --text-primary: #3B2816;
+  --text-secondary: #6B4E31;
+  --text-muted: #8F7254;
+  --text-accent: #880E4F;
+}
+
+/* Reset & Base Setup */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-family-body);
+  font-size: 16px;
+  line-height: 1.5;
+  user-select: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Top App Viewport */
+#app {
+  width: 100%;
+  height: 100%;
+  max-width: 540px; /* Optimal mobile-first container */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Top Floating / Fixed Header */
+.app-header {
+  position: relative;
+  z-index: 20;
+  height: 64px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-om {
+  font-size: 26px;
+  color: var(--color-saffron);
+  text-shadow: 0 0 10px rgba(230, 81, 0, 0.3);
+  animation: pulse-diya 3s infinite alternate ease-in-out;
+}
+
+.brand-title {
+  font-family: var(--font-family-display);
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--color-saffron), var(--color-maroon));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+/* Sync Button & Status Pill Styles */
+.sync-btn {
+  position: relative;
+}
+
+.sync-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.sync-icon.spinning {
+  animation: sync-spin 0.9s linear infinite;
+}
+
+@keyframes sync-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sync-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: 2px;
+  transition: all 0.3s ease;
+}
+
+.sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FFA000;
+  transition: background-color 0.3s ease;
+}
+
+.sync-status-pill.status-synced .sync-dot {
+  background: #2E7D32;
+}
+
+.sync-status-pill.status-synced {
+  color: #2E7D32;
+  border-color: rgba(46, 125, 50, 0.25);
+}
+
+.sync-status-pill.status-offline .sync-dot {
+  background: #E65100;
+}
+
+.sync-status-pill.status-offline {
+  color: #D84315;
+  border-color: rgba(216, 67, 21, 0.25);
+}
+
+.sync-status-pill.status-syncing .sync-dot {
+  background: #0288D1;
+  animation: pulse-dot 0.8s infinite alternate;
+}
+
+@keyframes pulse-dot {
+  0% { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Floating Notification Toast */
+.sync-toast {
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-gold);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.sync-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Main Scrollable View Area */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  padding-bottom: 74px; /* Space for bottom nav */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* PixiJS Interactive Devotional Layer */
+.pooja-canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 40; /* Above cards for visual effects, clicks pass through */
+}
+
+.pooja-canvas-layer canvas {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Hero: Today's Deity Banner */
+.hero-banner {
+  margin: 16px;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #FFF5E5, #FFE4C4);
+  border: 1.5px solid var(--border-gold);
+  box-shadow: var(--shadow-gold);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+body.theme-night .hero-banner {
+  background: linear-gradient(135deg, #2A1D13, #1F150D);
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-maroon);
+  color: #FFF;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.hero-title {
+  font-family: var(--font-family-devanagari);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.hero-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-saffron);
+  color: #FFF;
+  font-weight: 600;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(230, 81, 0, 0.35);
+}
+
+/* Quick Virtual Pooja Bar */
+.pooja-bar {
+  margin: 0 16px 16px 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: var(--shadow-sm);
+}
+
+.pooja-bar-btn {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 500;
+  transition: transform 0.15s ease;
+}
+
+.pooja-bar-btn:active {
+  transform: scale(0.9);
+}
+
+.pooja-bar-btn .btn-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Section Titles */
+.section-header {
+  padding: 12px 16px 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title {
+  font-family: var(--font-family-devanagari);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--color-saffron);
+}
+
+/* Deity Categories Horizontal Scroll */
+.category-scroll {
+  display: flex;
+  gap: 12px;
+  padding: 6px 16px 16px 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.category-card {
+  flex: 0 0 100px;
+  scroll-snap-align: start;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.category-card:active {
+  transform: scale(0.94);
+}
+
+.category-card.active {
+  border-color: var(--color-gold-primary);
+  background: var(--bg-surface-elevated);
+  box-shadow: var(--shadow-gold);
+}
+
+.category-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.category-name {
+  font-family: var(--font-family-devanagari);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.category-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Aarti List Cards */
+.arti-list {
+  padding: 0 16px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.arti-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.arti-card:active {
+  transform: scale(0.98);
+  border-color: var(--color-gold-primary);
+}
+
+.arti-thumb-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 14px;
+  flex-shrink: 0;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: var(--bg-surface-elevated);
+}
+
+.arti-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.arti-info {
+  flex: 1;
+}
+
+.arti-title-dev {
+  font-family: var(--font-family-devanagari);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.arti-title-eng {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.arti-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.arti-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.arti-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-saffron);
+  font-size: 14px;
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 30;
+}
+
+.nav-item {
+  flex: 1;
+  height: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--color-saffron);
+}
+
+.nav-item .nav-icon {
+  font-size: 20px;
+}
+
+/* Animations */
+@keyframes pulse-diya {
+  0% { transform: scale(1); filter: drop-shadow(0 0 2px #E65100); }
+  100% { transform: scale(1.1); filter: drop-shadow(0 0 10px #FF9800); }
+}

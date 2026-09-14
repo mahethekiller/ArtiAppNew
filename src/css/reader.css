@@ -1,0 +1,336 @@
+/* ==========================================================================
+   SACRED DEVOTIONAL DESIGN SYSTEM - READER VIEW STYLES
+   ========================================================================== */
+
+.reader-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-app);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.reader-view.open {
+  transform: translateY(0);
+}
+
+/* Reader Top Header */
+.reader-header {
+  height: 60px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 60;
+}
+
+.reader-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reader-header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.reader-title-dev {
+  font-family: var(--font-family-devanagari);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.reader-sub-info {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.reader-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Reading Scrollable Content */
+.reader-scroll-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 20px 140px 20px; /* Space for floating pooja toolbar */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Sacred Shloka & Meaning Banner */
+.reader-deity-intro {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1.5px dashed var(--border-gold);
+}
+
+.sacred-symbol {
+  font-size: 32px;
+  color: var(--color-saffron);
+  margin-bottom: 6px;
+}
+
+.reader-main-heading {
+  font-family: var(--font-family-devanagari);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-maroon);
+  margin-bottom: 8px;
+}
+
+body.theme-night .reader-main-heading {
+  color: var(--color-gold-light);
+}
+
+.reader-meaning-card {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-style: italic;
+  max-width: 420px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.reader-image-wrap {
+  width: 100%;
+  max-width: 280px;
+  margin: 14px auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--color-gold-primary);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+  background: var(--bg-surface-elevated);
+}
+
+.reader-image {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Lyrics Typography & Sections */
+.lyrics-container {
+  max-width: 480px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lyrics-section {
+  margin-bottom: 24px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+.lyrics-section.lyrics-chorus {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.section-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-saffron);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.lyrics-line {
+  font-family: var(--font-family-devanagari);
+  font-size: var(--lyrics-font-size);
+  line-height: 1.9;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+}
+
+.lyrics-spacer {
+  height: 16px;
+}
+
+.lyrics-transliteration .lyrics-line {
+  font-family: var(--font-family-body);
+  font-size: calc(var(--lyrics-font-size) * 0.9);
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.lyrics-footer-mark {
+  margin-top: 36px;
+  text-align: center;
+  color: var(--color-gold-dark);
+  font-family: var(--font-family-devanagari);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Floating Sacred Pooja & Reader Control Toolbar */
+.reader-toolbar {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  max-width: 508px;
+  margin: 0 auto;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), var(--shadow-gold);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  z-index: 70;
+}
+
+/* Row 1: Virtual Pooja Offerings (Flowers, Bell, Shankh) */
+.toolbar-pooja-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.pooja-action-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.pooja-action-pill:active {
+  transform: scale(0.92);
+}
+
+.pooja-action-pill.special-offer {
+  background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+  border-color: var(--color-gold-primary);
+  color: var(--color-saffron);
+}
+
+body.theme-night .pooja-action-pill.special-offer {
+  background: linear-gradient(135deg, #3A230F, #271607);
+}
+
+/* Row 2: Reading Controls (Auto-scroll, Font Zoom, Themes) */
+.toolbar-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.control-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.control-btn:active {
+  transform: scale(0.92);
+}
+
+.control-btn.active {
+  background: var(--color-saffron);
+  border-color: var(--color-saffron);
+  color: #FFF;
+}
+
+.speed-badge {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Theme Switcher Dots */
+.theme-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 3px 6px;
+}
+
+.theme-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.theme-dot.dot-ivory {
+  background: #FDFBF7;
+  border-color: #D4AF37;
+}
+
+.theme-dot.dot-night {
+  background: #12100E;
+  border-color: #555;
+}
+
+.theme-dot.dot-parchment {
+  background: #F4EAD4;
+  border-color: #B8860B;
+}
+
+.theme-dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 6px var(--color-gold-primary);
+}
