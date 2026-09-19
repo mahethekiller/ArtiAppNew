@@ -2,7 +2,7 @@
  * DataService - Unified Aarti & Deity Data Layer
  * Exclusively API-Driven Architecture with Offline Cache Persistence
  * 1. Fast startup from locally persisted API cache (storageService).
- * 2. Real-time background sync from Laravel REST API (http://localhost:8000/api/arti).
+ * 2. Real-time background sync from REST API (https://www.onlinetxttools.com/api/arti).
  * 3. Reactive event broadcasts for live UI updates when fresh API data arrives.
  * 4. Zero fallback to local bundled JSON - all data originates strictly from the API.
  */

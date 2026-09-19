@@ -19,10 +19,7 @@ class ReaderController {
     this.currentArti = null;
     this.wakeLock = null;
 
-    // Auto-scroll state
-    this.isAutoScrolling = false;
-    this.scrollSpeed = 1.5; // pixels per frame
-    this.scrollInterval = null;
+    this.wakeLock = null;
 
     // DOM Elements cache
     this.dom = {};
@@ -41,17 +38,6 @@ class ReaderController {
     }
     if (this.dom.btnFontInc) {
       this.dom.btnFontInc.addEventListener('click', () => this.adjustFontSize(2));
-    }
-
-    // Auto-Scroll Controls
-    if (this.dom.btnAutoScroll) {
-      this.dom.btnAutoScroll.addEventListener('click', () => this.toggleAutoScroll());
-    }
-    if (this.dom.btnScrollFaster) {
-      this.dom.btnScrollFaster.addEventListener('click', () => this.adjustScrollSpeed(0.5));
-    }
-    if (this.dom.btnScrollSlower) {
-      this.dom.btnScrollSlower.addEventListener('click', () => this.adjustScrollSpeed(-0.5));
     }
 
     // Devotional Offerings
@@ -130,8 +116,6 @@ class ReaderController {
     if (this.dom.readerScrollContainer) {
       this.dom.readerScrollContainer.scrollTop = 0;
     }
-
-    this.stopAutoScroll();
   }
 
   renderLyrics() {
@@ -140,36 +124,59 @@ class ReaderController {
 
     this.dom.lyricsContainer.innerHTML = '';
 
-    if (settings.showTransliteration && this.currentArti.lyrics_transliteration) {
+    const transliterationData = this.currentArti.lyrics_hinglish || this.currentArti.lyrics_transliteration;
+    const transLines = typeof transliterationData === 'string' ? transliterationData.split('\n') : transliterationData;
+
+    if (settings.showTransliteration && transLines && transLines.length > 0) {
       // English Transliteration view
       const transBlock = document.createElement('div');
       transBlock.className = 'lyrics-transliteration';
-      transBlock.innerHTML = this.currentArti.lyrics_transliteration
-        .map(line => line ? `<p class="lyrics-line">${line}</p>` : '<div class="lyrics-spacer"></div>')
+      transBlock.innerHTML = transLines
+        .map(line => (line && line.trim()) ? `<p class="lyrics-line">${line.trim()}</p>` : '<div class="lyrics-spacer"></div>')
         .join('');
       this.dom.lyricsContainer.appendChild(transBlock);
     } else {
       // Authentic Devanagari view
-      this.currentArti.lyrics_devanagari.forEach((section, index) => {
-        const secEl = document.createElement('div');
-        secEl.className = `lyrics-section lyrics-${section.type}`;
+      if (this.currentArti.lyrics_devanagari && this.currentArti.lyrics_devanagari.length > 0) {
+        this.currentArti.lyrics_devanagari.forEach((section, index) => {
+          const secEl = document.createElement('div');
+          secEl.className = `lyrics-section lyrics-${section.type}`;
 
-        if (section.type === 'chorus') {
-          const chorusBadge = document.createElement('div');
-          chorusBadge.className = 'section-badge';
-          chorusBadge.textContent = '॥ मुख्य चौपाई / Chorus ॥';
-          secEl.appendChild(chorusBadge);
-        }
+          if (section.type === 'chorus') {
+            const chorusBadge = document.createElement('div');
+            chorusBadge.className = 'section-badge';
+            chorusBadge.textContent = '॥ मुख्य चौपाई / Chorus ॥';
+            secEl.appendChild(chorusBadge);
+          }
 
-        section.lines.forEach(line => {
-          const p = document.createElement('p');
-          p.className = 'lyrics-line';
-          p.textContent = line;
-          secEl.appendChild(p);
+          section.lines.forEach(line => {
+            const p = document.createElement('p');
+            p.className = 'lyrics-line';
+            p.textContent = line;
+            secEl.appendChild(p);
+          });
+
+          this.dom.lyricsContainer.appendChild(secEl);
         });
-
-        this.dom.lyricsContainer.appendChild(secEl);
-      });
+      } else if (this.currentArti.lyrics_hindi_plain) {
+        // Fallback for plain text Hindi
+        const plainBlock = document.createElement('div');
+        plainBlock.className = 'lyrics-section';
+        const lines = this.currentArti.lyrics_hindi_plain.split('\n');
+        lines.forEach(line => {
+          if (line.trim()) {
+            const p = document.createElement('p');
+            p.className = 'lyrics-line';
+            p.textContent = line.trim();
+            plainBlock.appendChild(p);
+          } else {
+            const spacer = document.createElement('div');
+            spacer.className = 'lyrics-spacer';
+            plainBlock.appendChild(spacer);
+          }
+        });
+        this.dom.lyricsContainer.appendChild(plainBlock);
+      }
     }
 
     // Closing Mangalacharan / Shloka marker
@@ -200,63 +207,6 @@ class ReaderController {
     }
   }
 
-  /* --- Hands-Free Auto-Scroll Engine --- */
-  toggleAutoScroll() {
-    if (this.isAutoScrolling) {
-      this.stopAutoScroll();
-    } else {
-      this.startAutoScroll();
-    }
-  }
-
-  startAutoScroll() {
-    if (!this.dom.readerScrollContainer) return;
-    this.isAutoScrolling = true;
-    if (this.dom.btnAutoScroll) {
-      this.dom.btnAutoScroll.classList.add('active');
-      this.dom.btnAutoScroll.innerHTML = '<span class="icon">⏸️</span><span>रोकें (Pause)</span>';
-    }
-
-    let lastTime = performance.now();
-
-    const scrollLoop = (time) => {
-      if (!this.isAutoScrolling) return;
-      const delta = (time - lastTime) / 1000;
-      lastTime = time;
-
-      const container = this.dom.readerScrollContainer;
-      const maxScroll = container.scrollHeight - container.clientHeight;
-
-      if (container.scrollTop >= maxScroll) {
-        this.stopAutoScroll();
-        return;
-      }
-
-      container.scrollTop += this.scrollSpeed * (delta * 60);
-      this.scrollAnimId = requestAnimationFrame(scrollLoop);
-    };
-
-    this.scrollAnimId = requestAnimationFrame(scrollLoop);
-  }
-
-  stopAutoScroll() {
-    this.isAutoScrolling = false;
-    if (this.scrollAnimId) {
-      cancelAnimationFrame(this.scrollAnimId);
-      this.scrollAnimId = null;
-    }
-    if (this.dom.btnAutoScroll) {
-      this.dom.btnAutoScroll.classList.remove('active');
-      this.dom.btnAutoScroll.innerHTML = '<span class="icon">▶️</span><span>ऑटो-स्क्रॉल</span>';
-    }
-  }
-
-  adjustScrollSpeed(delta) {
-    this.scrollSpeed = Math.max(0.5, Math.min(5.0, this.scrollSpeed + delta));
-    if (this.dom.scrollSpeedLabel) {
-      this.dom.scrollSpeedLabel.textContent = `${this.scrollSpeed.toFixed(1)}x`;
-    }
-  }
 
   /* --- Font Resizing --- */
   adjustFontSize(delta) {
@@ -347,7 +297,6 @@ class ReaderController {
   }
 
   cleanup() {
-    this.stopAutoScroll();
     this.releaseWakeLock();
   }
 }

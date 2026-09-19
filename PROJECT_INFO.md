@@ -26,7 +26,7 @@
 
 ```mermaid
 graph TD
-    A[Laravel Backend: toolsite] -->|MySQL Database: arti_aartis, arti_deities| B(REST API: http://localhost:8000/api/arti)
+    A[Laravel Backend: toolsite / Production Host] -->|MySQL Database: arti_aartis, arti_deities| B(REST API: https://www.onlinetxttools.com/api/arti)
     B -->|HTTP Fetch / Parallel Async| C[API Client: src/js/api-client.js]
     C -->|Normalize Schema| D[Data Service: src/js/data-service.js]
     D -->|Local Cache: localStorage| E[Storage Service: src/js/storage.js]
@@ -40,8 +40,8 @@ graph TD
 - **Frontend Core**: Vanilla JavaScript (ES modules), Vanilla CSS3 (`src/css/main.css`). No heavy front-end frameworks.
 - **Graphic / Animation Engine**: PixiJS v8 (`pixi.js` 8.16.0).
 - **Bundler & Dev Server**: Vite 8 (`npm run dev`, `npm run build`, `npx vite preview --port 5173`).
-- **Backend API**: Laravel REST API located at `d:\SOFTWARES\xampp82new\htdocs\toolsite` running via `php artisan serve` on port 8000.
-- **Database**: MySQL database (`toolsite`) managed by Laravel Eloquent models and migrations.
+- **Backend API**: Laravel REST API hosted at `https://www.onlinetxttools.com/api/arti` (local development fallback: `http://localhost:8000/api/arti`).
+- **Database**: MySQL database managed by Laravel Eloquent models and migrations.
 
 ---
 
@@ -49,12 +49,12 @@ graph TD
 
 > [!IMPORTANT]
 > **Strict API Data Policy**:
-> - The application **strictly uses data originating from the API** (`http://localhost:8000/api/arti`).
+> - The application **strictly uses data originating from the API** (`https://www.onlinetxttools.com/api/arti`).
 > - **Zero bundled fallback JSON**: No mock or static JSON files are bundled as working runtime data.
 > - **Zero dummy aartis**: All placeholder/mock aartis created at early stages have been permanently purged. Only authentic extracted aartis exist.
 
 ### API Endpoints
-Base URL: `http://localhost:8000/api/arti` (Configurable via `window.APP_CONFIG.API_BASE_URL` or fallback).
+Base URL: `https://www.onlinetxttools.com/api/arti` (Configurable via `window.APP_CONFIG.API_BASE_URL` or fallback).
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -110,13 +110,13 @@ Base URL: `http://localhost:8000/api/arti` (Configurable via `window.APP_CONFIG.
 > All images are stored locally to guarantee offline resilience and avoid external CORS or CDN breakage.
 
 1. **Frontend App Images**:
-   Path: `d:\SOFTWARES\xampp82new\htdocs\androidapps\arti\public\assets\images\arties\`
+   Path: `public/assets/images/arties/`
    Served as static assets by Vite at `/assets/images/arties/<slug>.jpg`.
 2. **Backend API Images**:
-   Path: `d:\SOFTWARES\xampp82new\htdocs\toolsite\public\images\arties\`
-   Served by Laravel at `http://localhost:8000/images/arties/<slug>.jpg`.
+   Path: `toolsite/public/images/arties/`
+   Served by host at `https://www.onlinetxttools.com/images/arties/<slug>.jpg` or `http://localhost:8000/images/arties/<slug>.jpg`.
 3. **Image Normalization in API Client**:
-   If the API provides an absolute `image_url`, it is used directly; otherwise it cleanly resolves to the local `/assets/images/arties/` fallback.
+   If the API provides an absolute `image_url` matching `/images/arties/`, it seamlessly resolves to local `/assets/images/arties/` offline fallback, while remote storage upload URLs are preserved.
 
 ---
 

@@ -8,6 +8,7 @@ import { storageService } from './storage.js';
 import { audioService } from './audio-service.js';
 import { poojaPixiEngine } from './pooja-pixi.js';
 import { readerController } from './reader.js';
+import { adService } from './ad-service.js';
 
 class App {
   constructor() {
@@ -37,10 +38,7 @@ class App {
       readerScrollContainer: document.getElementById('readerScrollContainer'),
       btnFontDec: document.getElementById('btnFontDec'),
       btnFontInc: document.getElementById('btnFontInc'),
-      btnAutoScroll: document.getElementById('btnAutoScroll'),
-      btnScrollFaster: document.getElementById('btnScrollFaster'),
-      btnScrollSlower: document.getElementById('btnScrollSlower'),
-      scrollSpeedLabel: document.getElementById('scrollSpeedLabel'),
+      fontSizeLabel: document.getElementById('fontSizeLabel'),
       btnOfferFlowers: document.getElementById('btnOfferFlowers'),
       btnRingBell: document.getElementById('btnRingBell'),
       btnSoundShankh: document.getElementById('btnSoundShankh'),
@@ -51,12 +49,18 @@ class App {
     });
 
     // 4. Render Initial Views
+    this.applySettingsToApp();
     this.renderHome();
     this.renderCategories();
     this.bindAppEvents();
 
     // 5. Setup Live Sync Status Monitoring
     this.setupSyncMonitoring();
+
+    // 6. Initialize Ads
+    adService.initAppOpenAd();
+    adService.preloadInterstitial();
+    adService.loadBanner('ADMOB_Banner_Home', 'bottom');
   }
 
   setupSyncMonitoring() {
@@ -168,6 +172,24 @@ class App {
       });
     });
 
+    // Settings Sync Button
+    const btnSettingsSync = document.getElementById('btnSettingsSync');
+    if (btnSettingsSync) {
+      btnSettingsSync.addEventListener('click', () => {
+        this.triggerManualSync();
+      });
+    }
+
+    // Global Theme Switcher
+    const globalThemeDots = document.querySelectorAll('.global-theme-dot');
+    globalThemeDots.forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        const theme = e.currentTarget.dataset.theme;
+        storageService.updateSettings({ theme: theme });
+        this.applySettingsToApp();
+      });
+    });
+
     // Search Input
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
@@ -255,7 +277,35 @@ class App {
       if (categoriesSection) categoriesSection.style.display = 'none';
       if (artiListSectionTitle) artiListSectionTitle.textContent = 'खोज परिणाम (Search Results)';
       this.handleSearch(document.getElementById('searchInput')?.value || '');
+    } else if (tab === 'settings') {
+      if (homeHero) homeHero.style.display = 'none';
+      if (categoriesSection) categoriesSection.style.display = 'none';
+      if (artiListSectionTitle) artiListSectionTitle.parentElement.style.display = 'none';
+      if (document.getElementById('artiList')) document.getElementById('artiList').style.display = 'none';
+      const settingsSection = document.getElementById('settingsSection');
+      if (settingsSection) settingsSection.style.display = 'block';
     }
+
+    // Cleanup hiding for other tabs
+    if (tab !== 'settings') {
+      if (artiListSectionTitle) artiListSectionTitle.parentElement.style.display = 'block';
+      if (document.getElementById('artiList')) document.getElementById('artiList').style.display = 'grid';
+      const settingsSection = document.getElementById('settingsSection');
+      if (settingsSection) settingsSection.style.display = 'none';
+    }
+  }
+
+  applySettingsToApp() {
+    const settings = storageService.getSettings();
+    document.body.classList.remove('theme-ivory', 'theme-night', 'theme-parchment');
+    if (settings.theme) {
+      document.body.classList.add(settings.theme);
+    }
+
+    // Update active state on all theme dots across the app
+    document.querySelectorAll('.theme-dot').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.theme === settings.theme);
+    });
   }
 
   renderHome() {
@@ -389,14 +439,15 @@ class App {
     this.renderArtiList(results);
   }
 
-  openReader(arti) {
+  async openReader(arti) {
+    // Show interstitial occasionally before opening reader
+    await adService.showInterstitial();
+
     readerController.loadArti(arti);
     const readerEl = document.getElementById('readerView');
     if (readerEl) {
       readerEl.classList.add('open');
     }
-    // Offer celebratory flower shower when opening
-    poojaPixiEngine.offerFlowers(20);
   }
 
   closeReader() {
@@ -405,6 +456,7 @@ class App {
     if (readerEl) {
       readerEl.classList.remove('open');
     }
+
     // Refresh list in case favorites changed
     if (this.currentTab === 'favorites') {
       this.renderFavorites();

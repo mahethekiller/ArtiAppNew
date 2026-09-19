@@ -115,8 +115,8 @@ html, body {
 .app-header {
   position: relative;
   z-index: 20;
-  height: 64px;
-  padding: 0 16px;
+  height: calc(64px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 16px 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -275,7 +275,7 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
-  padding-bottom: 74px; /* Space for bottom nav */
+  padding-bottom: calc(74px + var(--admob-current-height, 0px)); /* Space for bottom nav + ad */
   -webkit-overflow-scrolling: touch;
 }
 
@@ -287,7 +287,7 @@ html, body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 40; /* Above cards for visual effects, clicks pass through */
+  z-index: 100; /* Above all views so flowers fall globally */
 }
 
 .pooja-canvas-layer canvas {
@@ -578,10 +578,11 @@ body.theme-night .hero-banner {
 /* Bottom Navigation Bar */
 .bottom-nav {
   position: absolute;
-  bottom: 0;
+  bottom: var(--admob-current-height, 0px);
   left: 0;
   width: 100%;
-  height: 64px;
+  height: calc(64px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   background: var(--bg-glass);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);

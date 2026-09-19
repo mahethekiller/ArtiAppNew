@@ -15,6 +15,12 @@
 
   <link rel="stylesheet" href="./src/css/main.css">
   <link rel="stylesheet" href="./src/css/reader.css">
+
+  <script>
+    window.APP_CONFIG = {
+      API_BASE_URL: 'https://www.onlinetxttools.com/api/arti'
+    };
+  </script>
 </head>
 <body class="theme-ivory">
   <div id="app">
@@ -101,6 +107,31 @@
           <!-- Populated by data-service -->
         </div>
       </section>
+
+      <!-- Section: Settings -->
+      <section id="settingsSection" style="display: none; padding: 20px 16px;">
+        <div class="section-header">
+          <h3 class="section-title">सेटिंग्स (Settings)</h3>
+        </div>
+        
+        <div class="settings-card" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); margin-bottom: 20px;">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: var(--text-primary);">ऐप की थीम (App Theme)</h4>
+          <div class="theme-picker" style="justify-content: flex-start; gap: 16px;">
+            <div class="theme-dot dot-ivory active global-theme-dot" data-theme="theme-ivory" title="Ivory Day" style="width:32px; height:32px;"></div>
+            <div class="theme-dot dot-parchment global-theme-dot" data-theme="theme-parchment" title="Parchment" style="width:32px; height:32px;"></div>
+            <div class="theme-dot dot-night global-theme-dot" data-theme="theme-night" title="Temple Night" style="width:32px; height:32px;"></div>
+          </div>
+        </div>
+
+        <div class="settings-card" style="background: var(--bg-surface); padding: 16px; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);">
+          <h4 style="margin: 0 0 12px 0; font-size: 14px; color: var(--text-primary);">डेटा सिंक (Data Sync)</h4>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 12px 0;">नए आरती डेटा को डाउनलोड करें।</p>
+          <button id="btnSettingsSync" style="background: var(--brand-primary); color: white; border: none; padding: 10px 16px; border-radius: var(--radius-full); font-size: 13px; display: flex; align-items: center; gap: 8px;">
+            <span class="icon">🔄</span>
+            <span>सिंक करें (Sync Now)</span>
+          </button>
+        </div>
+      </section>
     </main>
 
     <!-- Bottom Navigation Bar -->
@@ -120,6 +151,10 @@
       <button class="nav-item" data-tab="search">
         <span class="nav-icon">🔍</span>
         <span>खोजें (Search)</span>
+      </button>
+      <button class="nav-item" data-tab="settings">
+        <span class="nav-icon">⚙️</span>
+        <span>सेटिंग्स (Settings)</span>
       </button>
     </nav>
 
@@ -182,16 +217,7 @@
 
         <!-- Row 2: Reading Controls -->
         <div class="toolbar-controls-row">
-          <!-- Auto-Scroll -->
-          <div class="control-group">
-            <button class="control-btn" id="btnAutoScroll">
-              <span class="icon">▶️</span>
-              <span>ऑटो-स्क्रॉल</span>
-            </button>
-            <button class="control-btn" id="btnScrollSlower" style="padding:0 6px;">-</button>
-            <span class="speed-badge" id="scrollSpeedLabel">1.5x</span>
-            <button class="control-btn" id="btnScrollFaster" style="padding:0 6px;">+</button>
-          </div>
+          <!-- Auto-Scroll (Removed) -->
 
           <!-- Font Size Zoom -->
           <div class="control-group">

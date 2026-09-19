@@ -4,19 +4,30 @@
  * Supports configurable base URL, timeout abort controller, and schema normalization.
  */
 
-const DEFAULT_API_BASE = 'http://localhost:8000/api/arti';
+const DEFAULT_API_BASE = 'https://www.onlinetxttools.com/api/arti';
 
 export class ApiClient {
   constructor(baseUrl = null) {
-    this.baseUrl = baseUrl || 
+    const rawBase = baseUrl || 
+      (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) ||
       (typeof window !== 'undefined' && window.APP_CONFIG?.API_BASE_URL) || 
       DEFAULT_API_BASE;
-    this.timeoutMs = 5000;
+    this.baseUrl = this._formatApiBase(rawBase);
+    this.timeoutMs = 8000;
+  }
+
+  _formatApiBase(url) {
+    if (!url) return DEFAULT_API_BASE;
+    let clean = url.trim().replace(/\/+$/, '');
+    if (!clean.includes('/api/arti')) {
+      clean = `${clean}/api/arti`;
+    }
+    return clean;
   }
 
   setBaseUrl(url) {
     if (url) {
-      this.baseUrl = url.replace(/\/+$/, '');
+      this.baseUrl = this._formatApiBase(url);
     }
   }
 
@@ -80,19 +91,28 @@ export class ApiClient {
    */
   normalizeDeities(rawList) {
     if (!Array.isArray(rawList)) return [];
-    return rawList.map(item => ({
-      id: item.slug || String(item.id),
-      name: item.name,
-      name_devanagari: item.name_devanagari || item.name,
-      title_sub: item.title_sub || item.description || '',
-      day_of_week: item.day_of_week || 'Daily',
-      day_hindi: item.day_hindi || 'प्रतिदिन',
-      theme_color: item.theme_color || '#E65100',
-      accent_color: item.accent_color || '#FFA726',
-      icon: item.icon || '🕉️',
-      arti_count: item.arti_count || (item.aartis ? item.aartis.length : 0),
-      image_url: item.image_url || null
-    }));
+    return rawList.map(item => {
+      let resolvedImage = item.image_url;
+      if (resolvedImage) {
+        const filename = resolvedImage.split('/').pop();
+        if (filename && (resolvedImage.includes('/images/arties/') || resolvedImage.includes('localhost:8000/images/'))) {
+          resolvedImage = `/assets/images/arties/${filename}`;
+        }
+      }
+      return {
+        id: item.slug || String(item.id),
+        name: item.name,
+        name_devanagari: item.name_devanagari || item.name,
+        title_sub: item.title_sub || item.description || '',
+        day_of_week: item.day_of_week || 'Daily',
+        day_hindi: item.day_hindi || 'प्रतिदिन',
+        theme_color: item.theme_color || '#E65100',
+        accent_color: item.accent_color || '#FFA726',
+        icon: item.icon || '🕉️',
+        arti_count: item.arti_count || (item.aartis ? item.aartis.length : 0),
+        image_url: resolvedImage || null
+      };
+    });
   }
 
   /**
@@ -108,19 +128,33 @@ export class ApiClient {
    */
   normalizeSingleAarti(item) {
     if (!item) return null;
-    const slugId = item.slug || String(item.id);
-    const catId = item.category || (item.deity && item.deity.slug) || 'special';
+    const slugId = item.slug || `arti-${item.id}`;
+    const catId = item.category || (item.deity && (item.deity.slug || item.deity.category)) || 'special';
 
     // Resolve local / remote image fallback
     let resolvedImage = item.image_url;
-    if (!resolvedImage) {
-      resolvedImage = `/assets/images/arties/${slugId}.webp`;
+    if (resolvedImage) {
+      const filename = resolvedImage.split('/').pop();
+      if (filename && (resolvedImage.includes('/images/arties/') || resolvedImage.includes('localhost:8000/images/'))) {
+        resolvedImage = `/assets/images/arties/${filename}`;
+      }
+    } else {
+      resolvedImage = `/assets/images/arties/${slugId}.jpg`;
     }
 
     let lyricsDev = item.lyrics_json || [];
     if (typeof lyricsDev === 'string') {
       try { lyricsDev = JSON.parse(lyricsDev); } catch (e) { lyricsDev = []; }
     }
+    // Fallback: If lyrics_json is empty, but raw lyrics text is present, parse into structured sections
+    if ((!lyricsDev || lyricsDev.length === 0) && typeof item.lyrics === 'string' && item.lyrics.trim()) {
+      const paragraphs = item.lyrics.split(/\r?\n\s*\r?\n/).map(p => p.trim()).filter(Boolean);
+      lyricsDev = paragraphs.map((para, idx) => ({
+        type: idx === 0 && para.includes('॥') ? 'chorus' : 'verse',
+        lines: para.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+      }));
+    }
+
     let lyricsTrans = item.lyrics_transliteration || [];
     if (typeof lyricsTrans === 'string') {
       try { lyricsTrans = JSON.parse(lyricsTrans); } catch (e) { lyricsTrans = []; }

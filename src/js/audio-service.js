@@ -3,10 +3,13 @@
  * Uses Web Audio API for 100% offline, realistic temple bell chimes and shankh resonance.
  */
 
+import shankhAudioFile from '../assets/audio/shankh.mp3';
+
 class AudioService {
   constructor() {
     this.ctx = null;
     this.isMuted = false;
+    this.shankhAudio = new Audio(shankhAudioFile);
   }
 
   init() {
@@ -69,37 +72,16 @@ class AudioService {
   }
 
   /**
-   * Deep sacred Shankh (Conch shell) resonance sound
+   * Play the sacred Shankh (Conch shell) resonance sound from MP3
    */
   playShankh() {
     if (this.isMuted) return;
-    this.init();
-    if (!this.ctx) return;
-
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'sawtooth';
-    // Gentle glissando up like blowing a sacred conch
-    osc.frequency.setValueAtTime(140, now);
-    osc.frequency.exponentialRampToValueAtTime(220, now + 0.4);
-    osc.frequency.exponentialRampToValueAtTime(210, now + 2.0);
-
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(450, now);
-
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.exponentialRampToValueAtTime(0.3, now + 0.3);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 2.3);
+    
+    // Reset and play
+    this.shankhAudio.currentTime = 0;
+    this.shankhAudio.play().catch(err => {
+      console.warn('Audio playback failed for Shankh:', err);
+    });
 
     if (navigator.vibrate) {
       navigator.vibrate([60, 40, 80]);
